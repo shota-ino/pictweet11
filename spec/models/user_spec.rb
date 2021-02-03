@@ -8,10 +8,23 @@ RSpec.describe User, type: :model do
       expect(user.errors.full_messages).to include("Nickname can't be blank")
     end
     it 'emailが空では登録できない' do
-      # emailが空では登録できないテストコードを記述します
+      user = User.new(nickname: 'test', email: '', password: '000000', password_confirmation: '000000')
+      user.valid?
+      # binding.pry で検証
+      expect(user.errors.full_messages).to include("Email can't be blank")
     end 
   end
 end
+
+
+
+
+# 1. 検証のためのインスタンスを生成する
+# nicknameではなくemailを空にしてインスタンスを生成します。nicknameには空以外の値を入力しておきましょう。
+# 2. 生成したインスタンスに対してバリデーションを行う
+# 2は前述の実装と同様です。valid?メソッドを用いてバリデーションを行ってください。
+# 3. バリデーションを行ったあとに生成されるエラーメッセージが、どのような状態であればよいのかを指定する
+# 適切なメソッドやマッチャを用いて、エクスペクテーションを完成させ
 
 
 # 異常系のモデル単体テストの実装は、以下の流れで進みます。
