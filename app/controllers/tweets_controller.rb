@@ -13,8 +13,15 @@ class TweetsController < ApplicationController
   end
 
   def create
-    # binding.pry
-    Tweet.create(tweet_params)
+    @tweet = Tweet.new(tweet_params)
+    #バリデーションで問題があれば、保存はされず「投稿画面」に戻る
+    if @tweet.valid?
+      @tweet.save
+      redirect_to root_path
+    else
+      #保存されなければ、newに戻る
+      render 'new'
+    end
   end
 
   def destroy
