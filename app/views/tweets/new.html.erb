@@ -1,13 +1,6 @@
 <div class="contents row">
   <div class="container">
     <h3>投稿する</h3>
-    <%= render 'layouts/error_messages', model: form.object %>
     <%= render partial: "form", locals: { tweet: @tweet } %>
   </div>
 </div>
-
-
-<%# エラーメッセージを表示させる部分に以下のような記述をしましょう。
-ツイートが保存されなかった場合、<%= render 'layouts/error_messages', model: form.object が読み込まれエラーメッセージが表示されます。 %>
-
-<%# 投稿画面で画像とテキストを何も入力せず投稿した場合に、エラーメッセージが表示される設定が完了 %>
