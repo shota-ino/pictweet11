@@ -55,6 +55,64 @@ RSpec.describe 'ユーザー新規登録', type: :system do
   end
 end
 
+RSpec.describe 'ログイン', type: :system do
+  before do
+    @user = FactoryBot.create(:user)
+  end
+  context 'ログインができるとき' do
+    it '保存されているユーザーの情報と合致すればログインができる' do
+      # トップページに移動する
+      visit root_path
+      # トップページにログインページへ遷移するボタンがあることを確認する
+      expect(page).to have_content('ログイン')
+      # ログインページへ遷移する
+      visit new_user_session_path
+      # 正しいユーザー情報を入力する
+      fill_in 'Email', with: @user.email
+      fill_in 'Password', with: @user.password
+      # ログインボタンを押す
+      find('input[name="commit"]').click
+      # トップページへ遷移することを確認する
+      expect(current_path).to eq(root_path)
+      # カーソルを合わせるとログアウトボタンが表示されることを確認する
+      expect(
+        find('.user_nav').find('span').hover
+      ).to have_content('ログアウト')
+      # サインアップページへ遷移するボタンやログインページへ遷移するボタンが表示されていないことを確認する
+      expect(page).to have_no_content('新規登録')
+      expect(page).to have_no_content('ログイン')
+    end
+  end
+  context 'ログインができないとき' do
+    it '保存されているユーザーの情報と合致しないとログインができない' do
+      # トップページに移動する
+      visit root_path
+      # トップページにログインページへ遷移するボタンがあることを確認する
+      expect(page).to have_content('ログイン')
+      # ログインページへ遷移する
+      visit new_user_session_path
+      # ユーザー情報を入力する
+      fill_in 'Email', with: ''
+      fill_in 'Password', with: ''
+      # ログインボタンを押す
+      find('input[name="commit"]').click
+      # ログインページへ戻されることを確認する
+      expect(current_path).to eq(new_user_session_path)
+    end
+  end
+end
+
+
+
+# ポイントとしては、新規登録ではvisit先がnew_user_registration_pathであったのに対し、今回はログインであるためnew_user_session_pathとしている点です。また、フォームもログインの際はメールアドレスとパスワードのみでしたので、それに限定した記述としています。
+
+
+
+# ポイントとしては、beforeの記述です。ユーザー新規登録の時はユーザー情報の生成のみを行うためFactoryBot.build(:user)としていました。
+# 一方、今回はログイン、すなわちすでに登録されているユーザーに対しての挙動を確認するためFactoryBot.create(:user)としています。
+
+
+
 # fill_inにおいて、空の文字列を入力しています。各フォームが空では正しく登録ができません。それを再現しています。
 # 正しくフォームに値を入力できていないと、新規登録ボタンをクリックしても、テーブルに保存されません。したがって、{ User.count }.by(0)としてレコードの数が変わらないこと（変化が0であること）を確かめています。
 # 新規登録がうまくいかなかった時はトップページには遷移せずに、新規登録ページに再度戻されます。新規登録ページのURLは/usersとなるので、正しく戻されているかどうかを確認しています。
