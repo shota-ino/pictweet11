@@ -1,10 +1,25 @@
 require 'rails_helper'
+describe TweetsController, type: :request do
 
-RSpec.describe "Tweets", type: :request do
-  describe "GET /tweets" do
-    it "works! (now write some real specs)" do
-      get tweets_index_path
-      expect(response).to have_http_status(200)
+  before do
+    @tweet = FactoryBot.create(:tweet)
+  end
+
+  describe 'GET #index' do
+    it 'indexアクションにリクエストすると正常にレスポンスが返ってくる' do 
+    end
+    it 'indexアクションにリクエストするとレスポンスに投稿済みのツイートのテキストが存在する' do 
+    end
+    it 'indexアクションにリクエストするとレスポンスに投稿済みのツイートの画像URLが存在する' do 
+    end
+    it 'indexアクションにリクエストするとレスポンスに投稿検索フォームが存在する' do 
     end
   end
 end
+
+
+
+# 今回は、tweetsコントローラーのindexアクションにリクエストを送ったときのレスポンスについて確認するコードを記述
+
+# あらかじめデータベースにツイートが保存されている必要があります。
+# FactoryBotを用いたインスタンスに関しては、FactoryBot.create(:tweet)というように「create」で保存をあらかじめしておきます。
