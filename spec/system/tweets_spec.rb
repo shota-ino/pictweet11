@@ -206,13 +206,29 @@ RSpec.describe 'ツイート詳細', type: :system do
   end
   it 'ログインしていない状態でツイート詳細ページに遷移できるもののコメント投稿欄が表示されない' do
     # トップページに移動する
-    # ツイートに「詳細」ボタンがあることを確認する
+    visit root_path
+    # ツイートに「詳細」ボタンがある
+    expect(
+      all(".more")[0].hover
+    ).to have_link '詳細', href: tweet_path(@tweet)
     # 詳細ページに遷移する
+    visit tweet_path(@tweet)
     # 詳細ページにツイートの内容が含まれている
+    expect(page).to have_selector ".content_post[style='background-image: url(#{@tweet.image});']"
+    expect(page).to have_content("#{@tweet.text}")
     # フォームが存在しないことを確認する
+    expect(page).to have_no_selector 'form'
     # 「コメントの投稿には新規登録/ログインが必要です」が表示されていることを確認する
+    expect(page).to have_content 'コメントの投稿には新規登録/ログインが必要です'
   end
 end
+
+
+
+# 3行目で、ログインしていない状態で、トップページに移動しています。そして、保存済みのツイートに詳細ページへのリンクがあることを確認し、9行目でそのツイートの詳細ページに遷移しています。
+# 11~12行目で確認していることは、当該ツイートの情報が、詳細ページに正しく表示されているかどうかです。
+# 一方、ログインしていないとコメント投稿フォームは存在せず、「コメントの投稿には新規登録/ログインが必要です」が表示されているはずです。それを、14行目と16行目で確認しています。
+
 
 
 
