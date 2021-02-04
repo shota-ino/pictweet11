@@ -95,15 +95,35 @@ RSpec.describe 'ツイート編集', type: :system do
   context 'ツイート編集ができないとき' do
     it 'ログインしたユーザーは自分以外が投稿したツイートの編集画面には遷移できない' do
       # ツイート1を投稿したユーザーでログインする
+      visit new_user_session_path
+      fill_in 'Email', with: @tweet1.user.email
+      fill_in 'Password', with: @tweet1.user.password
+      find('input[name="commit"]').click
+      expect(current_path).to eq(root_path)
       # ツイート2に「編集」ボタンがないことを確認する
+      expect(
+        all('.more')[0].hover
+      ).to have_no_link '編集', href: edit_tweet_path(@tweet2)
     end
     it 'ログインしていないとツイートの編集画面には遷移できない' do
       # トップページにいる
+      visit root_path
       # ツイート1に「編集」ボタンがないことを確認する
+      expect(
+        all('.more')[1].hover
+      ).to have_no_link '編集', href: edit_tweet_path(@tweet1)
       # ツイート2に「編集」ボタンがないことを確認する
+      expect(
+        all('.more')[0].hover
+      ).to have_no_link '編集', href: edit_tweet_path(@tweet2)
     end
   end
 end
+
+
+
+# 104-106行目に着目しましょう。@tweet1のユーザーでログインしている時は、@tweet2の編集へのリンクがないことをhave_no_linkで確かめています。
+# また、112-118行目に着目しましょう。そもそもログインしていないときは、@tweet1と@tweet2、つまり存在するすべてのツイート編集リンクがないことを確かめています。
 
 
 
