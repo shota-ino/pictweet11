@@ -35,14 +35,30 @@ RSpec.describe 'ユーザー新規登録', type: :system do
   context 'ユーザー新規登録ができないとき' do
     it '誤った情報ではユーザー新規登録ができずに新規登録ページへ戻ってくる' do
       # トップページに移動する
+      visit root_path
       # トップページにサインアップページへ遷移するボタンがあることを確認する
+      expect(page).to have_content('新規登録')
       # 新規登録ページへ移動する
+      visit new_user_registration_path
       # ユーザー情報を入力する
+      fill_in 'Nickname', with: ''
+      fill_in 'Email', with: ''
+      fill_in 'Password', with: ''
+      fill_in 'Password confirmation', with: ''
       # サインアップボタンを押してもユーザーモデルのカウントは上がらないことを確認する
+      expect{
+        find('input[name="commit"]').click
+      }.to change { User.count }.by(0)
       # 新規登録ページへ戻されることを確認する
+      expect(current_path).to eq('/users')
     end
   end
 end
+
+# fill_inにおいて、空の文字列を入力しています。各フォームが空では正しく登録ができません。それを再現しています。
+# 正しくフォームに値を入力できていないと、新規登録ボタンをクリックしても、テーブルに保存されません。したがって、{ User.count }.by(0)としてレコードの数が変わらないこと（変化が0であること）を確かめています。
+# 新規登録がうまくいかなかった時はトップページには遷移せずに、新規登録ページに再度戻されます。新規登録ページのURLは/usersとなるので、正しく戻されているかどうかを確認しています。
+
 
 
 
