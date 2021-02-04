@@ -187,10 +187,22 @@ RSpec.describe 'ツイート詳細', type: :system do
   end
   it 'ログインしたユーザーはツイート詳細ページに遷移してコメント投稿欄が表示される' do
     # ログインする
-    # ツイートに「詳細」ボタンがあることを確認する
+    visit new_user_session_path
+    fill_in 'Email', with: @tweet.user.email
+    fill_in 'Password', with: @tweet.user.password
+    find('input[name="commit"]').click
+    expect(current_path).to eq root_path
+    # ツイートに「詳細」ボタンがある
+    expect(
+      all(".more")[0].hover
+    ).to have_link '詳細', href: tweet_path(@tweet)
     # 詳細ページに遷移する
+    visit tweet_path(@tweet)
     # 詳細ページにツイートの内容が含まれている
+    expect(page).to have_selector ".content_post[style='background-image: url(#{@tweet.image});']"
+    expect(page).to have_content("#{@tweet.text}")
     # コメント用のフォームが存在する
+    expect(page).to have_selector 'form'
   end
   it 'ログインしていない状態でツイート詳細ページに遷移できるもののコメント投稿欄が表示されない' do
     # トップページに移動する
@@ -201,6 +213,12 @@ RSpec.describe 'ツイート詳細', type: :system do
     # 「コメントの投稿には新規登録/ログインが必要です」が表示されていることを確認する
   end
 end
+
+
+
+# ログインの処理を行っています。ログインに使うユーザーの情報は、@tweetに紐づくユーザーを用いるため、@tweet.user.emailのような形で情報を取得しています。
+# 投稿済みのツイートに詳細ページへのリンクがあることを確認し、投稿済みのツイートの詳細ページへ遷移しています。
+# そして、期待される表示がなされているかを確認しています。
 
 
 # ポイントとしては、ログインしているとき/していないときで、詳細ページにおけるコメント投稿部分に表示の違いがあります。
